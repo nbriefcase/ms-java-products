@@ -6,6 +6,7 @@
 	<modules>
 		<module>items</module>
 		<module>products</module>
+		<module>server</module>
 	</modules>
 	<groupId>com.personal.eureka</groupId>
 	<artifactId>core</artifactId>
