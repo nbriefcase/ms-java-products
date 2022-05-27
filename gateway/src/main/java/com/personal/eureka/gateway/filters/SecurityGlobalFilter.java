@@ -4,7 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.cloud.gateway.filter.GatewayFilterChain;
 import org.springframework.cloud.gateway.filter.GlobalFilter;
 import org.springframework.core.Ordered;
-import org.springframework.http.MediaType;
+//import org.springframework.http.MediaType;
 import org.springframework.http.ResponseCookie;
 import org.springframework.stereotype.Component;
 import org.springframework.web.server.ServerWebExchange;
@@ -27,7 +27,7 @@ public class SecurityGlobalFilter implements GlobalFilter, Ordered {
                     .ifPresent(value -> exchange.getResponse().getHeaders().add("token", value));
 
             exchange.getResponse().getCookies().add("color", ResponseCookie.from("color", "red").build());
-            exchange.getResponse().getHeaders().setContentType(MediaType.TEXT_PLAIN);
+//            exchange.getResponse().getHeaders().setContentType(MediaType.TEXT_PLAIN);
         }));
     }
 
