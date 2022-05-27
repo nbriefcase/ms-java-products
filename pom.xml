@@ -7,6 +7,7 @@
 		<module>items</module>
 		<module>products</module>
 		<module>server</module>
+		<module>gateway</module>
 	</modules>
 	<groupId>com.personal.eureka</groupId>
 	<artifactId>core</artifactId>
