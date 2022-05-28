@@ -3,6 +3,7 @@ package com.personal.eureka.items.controller;
 import com.personal.eureka.items.models.Item;
 import com.personal.eureka.items.models.Product;
 import com.personal.eureka.items.service.IItemService;
+import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.client.circuitbreaker.CircuitBreakerFactory;
@@ -35,6 +36,12 @@ public class ItemController {
     public Item get(@PathVariable Long id, @PathVariable Integer amount) {
         return circuitBreakerFactory.create("items")
                 .run(() -> itemService.findById(id, amount), e -> defaultItem(id, amount, e));
+    }
+
+    @CircuitBreaker(name = "items", fallbackMethod = "defaultItem")
+    @GetMapping(value = "/item/cb/{id}/amount/{amount}")
+    public Item getCB(@PathVariable Long id, @PathVariable Integer amount) {
+        return itemService.findById(id, amount);
     }
 
     private Item defaultItem(Long id, Integer amount, Throwable ex) {

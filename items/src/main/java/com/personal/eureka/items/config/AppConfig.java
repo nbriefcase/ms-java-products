@@ -19,6 +19,11 @@ public class AppConfig {
         return new RestTemplate();
     }
 
+    /**
+     * This Bean will be use with CircuitBreakerFactory class, It wont work with annotations
+     *
+     * @return Customizer bean for the CircuitBreakerFactory
+     */
     @Bean
     public Customizer<Resilience4JCircuitBreakerFactory> defaultCustomizer() {
         return factory -> factory.configureDefault(id ->
