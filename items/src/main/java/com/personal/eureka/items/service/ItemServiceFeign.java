@@ -29,4 +29,19 @@ public class ItemServiceFeign implements IItemService {
         Product product = productRestClient.findById(id);
         return new Item(product, amount);
     }
+
+    @Override
+    public Product save(Product product) {
+        return productRestClient.create(product);
+    }
+
+    @Override
+    public Product update(Product product, Long id) {
+        return productRestClient.update(product, id);
+    }
+
+    @Override
+    public void delete(Long id) {
+        productRestClient.delete(id);
+    }
 }
