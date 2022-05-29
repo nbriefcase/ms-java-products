@@ -1,6 +1,6 @@
 package com.personal.eureka.users.models.repository;
 
-import com.personal.eureka.users.models.entity.User;
+import com.personal.eureka.commons.users.models.entity.User;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.data.repository.query.Param;

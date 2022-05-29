@@ -1,7 +1,7 @@
 package com.personal.eureka.users.config;
 
-import com.personal.eureka.users.models.entity.Role;
-import com.personal.eureka.users.models.entity.User;
+import com.personal.eureka.commons.users.models.entity.Role;
+import com.personal.eureka.commons.users.models.entity.User;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.rest.core.config.RepositoryRestConfiguration;
 import org.springframework.data.rest.webmvc.config.RepositoryRestConfigurer;

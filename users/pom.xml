@@ -16,6 +16,7 @@
     <properties>
         <java.version>11</java.version>
         <spring-cloud.version>2021.0.3</spring-cloud.version>
+        <product.commons.users.version>0.0.1-SNAPSHOT</product.commons.users.version>
     </properties>
     <dependencies>
         <dependency>
@@ -33,6 +34,11 @@
         <dependency>
             <groupId>org.springframework.cloud</groupId>
             <artifactId>spring-cloud-starter-netflix-eureka-client</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.personal.eureka</groupId>
+            <artifactId>commons-users</artifactId>
+            <version>${product.commons.users.version}</version>
         </dependency>
 
         <dependency>
