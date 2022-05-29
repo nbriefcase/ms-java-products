@@ -1,6 +1,6 @@
 package com.personal.eureka.items.client;
 
-import com.personal.eureka.items.models.Product;
+import com.personal.eureka.commons.models.entity.Product;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;

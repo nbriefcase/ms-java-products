@@ -1,7 +1,7 @@
 package com.personal.eureka.items.service;
 
+import com.personal.eureka.commons.models.entity.Product;
 import com.personal.eureka.items.models.Item;
-import com.personal.eureka.items.models.Product;
 
 import java.util.List;
 

@@ -1,7 +1,7 @@
 package com.personal.eureka.items.controller;
 
+import com.personal.eureka.commons.models.entity.Product;
 import com.personal.eureka.items.models.Item;
-import com.personal.eureka.items.models.Product;
 import com.personal.eureka.items.service.IItemService;
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 import io.github.resilience4j.timelimiter.annotation.TimeLimiter;

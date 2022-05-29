@@ -1,8 +1,8 @@
 package com.personal.eureka.items.service;
 
+import com.personal.eureka.commons.models.entity.Product;
 import com.personal.eureka.items.client.ProductRestClient;
 import com.personal.eureka.items.models.Item;
-import com.personal.eureka.items.models.Product;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Service;
