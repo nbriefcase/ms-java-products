@@ -1,4 +1,4 @@
-package com.personal.eureka.products.models.entity;
+package com.personal.eureka.commons.models.entity;
 
 import lombok.Data;
 
