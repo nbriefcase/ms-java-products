@@ -7,7 +7,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class ProductServiceImpl implements IProductService {
@@ -25,5 +24,17 @@ public class ProductServiceImpl implements IProductService {
     @Transactional(readOnly = true)
     public Product findById(Long id) {
         return productRepository.findById(id).orElse(null);
+    }
+
+    @Override
+    @Transactional
+    public Product save(Product product) {
+        return productRepository.save(product);
+    }
+
+    @Override
+    @Transactional
+    public void deleteById(Long id) {
+        productRepository.deleteById(id);
     }
 }
