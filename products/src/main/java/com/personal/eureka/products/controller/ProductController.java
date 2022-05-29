@@ -1,6 +1,6 @@
 package com.personal.eureka.products.controller;
 
-import com.personal.eureka.products.models.entity.Product;
+import com.personal.eureka.commons.models.entity.Product;
 import com.personal.eureka.products.service.IProductService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;

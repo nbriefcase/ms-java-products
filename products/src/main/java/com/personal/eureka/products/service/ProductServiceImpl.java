@@ -1,6 +1,6 @@
 package com.personal.eureka.products.service;
 
-import com.personal.eureka.products.models.entity.Product;
+import com.personal.eureka.commons.models.entity.Product;
 import com.personal.eureka.products.models.repository.ProductRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
