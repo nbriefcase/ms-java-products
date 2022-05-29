@@ -7,14 +7,19 @@ import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 import io.github.resilience4j.timelimiter.annotation.TimeLimiter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cloud.client.circuitbreaker.CircuitBreakerFactory;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 
 @Slf4j
@@ -23,6 +28,12 @@ public class ItemController {
 
     @Autowired
     private IItemService itemService;
+
+    @Value("${config.test.message}")
+    private String testMessage;
+
+    @Value("${server.port}")
+    private String serverPort;
 
     @Autowired
     private CircuitBreakerFactory circuitBreakerFactory;
@@ -57,6 +68,14 @@ public class ItemController {
     @GetMapping(value = "/item/cb/tl/{id}/amount/{amount}")
     public CompletableFuture<Item> getCbTL(@PathVariable Long id, @PathVariable Integer amount) {
         return CompletableFuture.supplyAsync(() -> itemService.findById(id, amount));
+    }
+
+    @GetMapping(value = "/test/message")
+    public ResponseEntity<?> getTestMessage() {
+        Map<String, String> json = new HashMap<>();
+        json.put("text", testMessage);
+        json.put("port", serverPort);
+        return new ResponseEntity<>(json, HttpStatus.OK);
     }
 
     private Item defaultItem(Long id, Integer amount, Throwable ex) {
