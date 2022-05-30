@@ -12,7 +12,8 @@
         <module>config-server</module>
 		<module>users</module>
 		<module>commons-users</module>
-	</modules>
+        <module>oauth2</module>
+    </modules>
 	<groupId>com.personal.eureka</groupId>
 	<artifactId>core</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
