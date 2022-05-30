@@ -49,14 +49,14 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
     }
 
     @Bean
-    private JwtAccessTokenConverter accessTokenConverter() {
+    public JwtAccessTokenConverter accessTokenConverter() {
         JwtAccessTokenConverter tokenConverter = new JwtAccessTokenConverter();
         tokenConverter.setSigningKey("TestSecretCode");
         return null;
     }
 
     @Bean
-    private JwtTokenStore tokenStorage() {
+    public JwtTokenStore tokenStorage() {
         return new JwtTokenStore(accessTokenConverter());
     }
 }
