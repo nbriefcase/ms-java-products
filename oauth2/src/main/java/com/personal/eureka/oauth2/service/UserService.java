@@ -16,7 +16,7 @@ import java.util.stream.Collectors;
 
 @Slf4j
 @Service
-public class UserService implements UserDetailsService {
+public class UserService implements IUserService, UserDetailsService {
 
     @Autowired
     private UserFeignClient userFeignClient;
@@ -37,5 +37,10 @@ public class UserService implements UserDetailsService {
         return new org.springframework.security.core.userdetails.User(
                 byUsername.getUsername(), byUsername.getPassword(), byUsername.getIsActive(),
                 true, true, true, authorities);
+    }
+
+    @Override
+    public User findByUsername(String username) {
+        return userFeignClient.findByUsername(username);
     }
 }
