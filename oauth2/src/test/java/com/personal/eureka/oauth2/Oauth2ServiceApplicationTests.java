@@ -1,10 +1,10 @@
-package com.personal.eureka.items;
+package com.personal.eureka.oauth2;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
-class ItemServiceApplicationTests {
+class Oauth2ServiceApplicationTests {
 
 	@Test
 	void contextLoads() {

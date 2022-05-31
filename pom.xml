@@ -10,6 +10,9 @@
 		<module>server</module>
 		<module>gateway</module>
         <module>config-server</module>
+		<module>users</module>
+		<module>commons-users</module>
+        <module>oauth2</module>
     </modules>
 	<groupId>com.personal.eureka</groupId>
 	<artifactId>core</artifactId>
