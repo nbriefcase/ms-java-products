@@ -47,4 +47,6 @@ public class User implements Serializable {
             })
     private List<Role> roles;
 
+    private Integer failedAttempts;
+
 }
