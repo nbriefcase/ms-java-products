@@ -24,7 +24,7 @@ public class AuthenticationHandler implements AuthenticationEventPublisher {
         if (authentication.getDetails() instanceof WebAuthenticationDetails) {
             return;
         }
-        UserDetails user = (UserDetails) authentication.getDetails();
+        UserDetails user = (UserDetails) authentication.getPrincipal();
         log.info("Login success!. " + user.getUsername());
 
         User byUsername = userService.findByUsername(authentication.getName());
