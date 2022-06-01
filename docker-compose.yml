@@ -4,12 +4,17 @@ version: '3.1'
 
 services:
 
-  mysqlDb:
+  mysql-server:
     # https://hub.docker.com/_/mysql
+    # https://stackoverflow.com/questions/54479941/how-to-init-mysql-database-in-docker-compose
     image: mysql
     container_name: mysql
-    command: --default-authentication-plugin=mysql_native_password
+    command: --default-authentication-plugin=mysql_native_password --skip-name-resolve=OFF
     restart: always
+    volumes:
+      - ./data/mysql-data:/var/lib/mysql
+      #- ./scripts/mysql-init-files:/etc/mysql/conf.d
+      - ./scripts/mysql-init-files:/docker-entrypoint-initdb.d
     environment:
       - MYSQL_DATABASE=myDb
       - MYSQL_ROOT_PASSWORD=admin
@@ -18,7 +23,7 @@ services:
     networks:
       - internal
 
-  postgresDb:
+  postgres-server:
     # https://hub.docker.com/_/postgres
     image: postgres
     container_name: postgres
@@ -32,7 +37,7 @@ services:
     networks:
       - internal
 
-  zipkin:
+  zipkin-server:
     image: openzipkin/zipkin
     container_name: zipkin
     # Environment settings are defined here https://github.com/openzipkin/zipkin/blob/master/zipkin-server/README.md#environment-variables
@@ -41,17 +46,20 @@ services:
       - RABBIT_USER=user
       - RABBIT_PASSWORD=12345
       - RABBIT_ADDRESSES=rabbitmq:5672
-      - STORAGE_TYPE=mem # mem, mysql, cassandra3, elasticsearch
-    #      - MYSQL_HOST=mysqlDb
+      - STORAGE_TYPE=mysql # mem, mysql, cassandra3, elasticsearch
+      - MYSQL_USER=zipkin
+      - MYSQL_PASS=zipkin
+      - MYSQL_DB=zipkin
+      - MYSQL_HOST=mysql-server
     ports:
       - 9411:9411
     depends_on:
-      - mysqlDb
-      - rabbitmq
+      - mysql-server
+      - rabbitmq-server
     networks:
       - internal
 
-  rabbitmq:
+  rabbitmq-server:
     # https://hub.docker.com/r/bitnami/rabbitmq
     image: 'bitnami/rabbitmq:latest'
     container_name: rabbitmq
