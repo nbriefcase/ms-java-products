@@ -7,6 +7,7 @@ services:
   mysqlDb:
     # https://hub.docker.com/_/mysql
     image: mysql
+    container_name: mysql
     command: --default-authentication-plugin=mysql_native_password
     restart: always
     environment:
@@ -14,10 +15,13 @@ services:
       - MYSQL_ROOT_PASSWORD=admin
     ports:
       - 3306:3306
+    networks:
+      - internal
 
   postgresDb:
     # https://hub.docker.com/_/postgres
     image: postgres
+    container_name: postgres
     restart: always
     environment:
       - POSTGRES_DB=myDb
@@ -25,9 +29,49 @@ services:
       - POSTGRES_PASSWORD=admin
     ports:
       - 5432:5432
+    networks:
+      - internal
+
+  zipkin:
+    image: openzipkin/zipkin
+    container_name: zipkin
+    # Environment settings are defined here https://github.com/openzipkin/zipkin/blob/master/zipkin-server/README.md#environment-variables
+    # https://github.com/openzipkin/zipkin/tree/master/zipkin-collector/rabbitmq
+    environment:
+      - RABBIT_USER=user
+      - RABBIT_PASSWORD=12345
+      - RABBIT_ADDRESSES=rabbitmq:5672
+      - STORAGE_TYPE=mem # mem, mysql, cassandra3, elasticsearch
+    #      - MYSQL_HOST=mysqlDb
+    ports:
+      - 9411:9411
+    depends_on:
+      - mysqlDb
+      - rabbitmq
+    networks:
+      - internal
+
+  rabbitmq:
+    # https://hub.docker.com/r/bitnami/rabbitmq
+    image: 'bitnami/rabbitmq:latest'
+    container_name: rabbitmq
+    environment:
+      - RABBITMQ_USERNAME=user
+      - RABBITMQ_PASSWORD=12345
+    ports:
+      - 15672:15672
+    networks:
+      - internal
 
   adminer:
     image: adminer
+    container_name: adminer
     restart: always
     ports:
       - 3100:8080
+    networks:
+      - internal
+
+networks:
+  internal:
+    driver: bridge
