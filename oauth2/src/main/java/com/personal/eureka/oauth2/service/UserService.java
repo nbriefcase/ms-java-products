@@ -1,5 +1,6 @@
 package com.personal.eureka.oauth2.service;
 
+import brave.Tracer;
 import com.personal.eureka.commons.users.models.entity.User;
 import com.personal.eureka.oauth2.clients.UserFeignClient;
 import feign.FeignException;
@@ -22,6 +23,9 @@ public class UserService implements IUserService, UserDetailsService {
     @Autowired
     private UserFeignClient userFeignClient;
 
+    @Autowired
+    private Tracer tracer;
+
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         try {
@@ -37,6 +41,7 @@ public class UserService implements IUserService, UserDetailsService {
         } catch (FeignException e) {
             String msg = "User not found!. " + username;
             log.error(msg);
+            tracer.currentSpan().tag("error.message", msg + ": " + e.getMessage());
             throw new UsernameNotFoundException(msg);
         }
     }

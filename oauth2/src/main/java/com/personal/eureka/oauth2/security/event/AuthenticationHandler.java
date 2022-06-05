@@ -1,5 +1,6 @@
 package com.personal.eureka.oauth2.security.event;
 
+import brave.Tracer;
 import com.personal.eureka.commons.users.models.entity.User;
 import com.personal.eureka.oauth2.service.IUserService;
 import feign.FeignException;
@@ -19,6 +20,9 @@ public class AuthenticationHandler implements AuthenticationEventPublisher {
     @Autowired
     private IUserService userService;
 
+    @Autowired
+    private Tracer tracer;
+
     @Override
     public void publishAuthenticationSuccess(Authentication authentication) {
         if (authentication.getDetails() instanceof WebAuthenticationDetails) {
@@ -36,25 +40,35 @@ public class AuthenticationHandler implements AuthenticationEventPublisher {
 
     @Override
     public void publishAuthenticationFailure(AuthenticationException exception, Authentication authentication) {
-        log.warn("Login failed!.");
+        String msg = "Login failed!.";
+        log.warn(msg);
+
         try {
             User byUsername = userService.findByUsername(authentication.getName());
             if (byUsername.getFailedAttempts() == null) {
                 byUsername.setFailedAttempts(0);
             }
 
+            StringBuilder errors = new StringBuilder(msg);
             byUsername.setFailedAttempts(byUsername.getFailedAttempts() + 1);
-            log.info(String.format("User \"%s\" attempts: %d", byUsername.getUsername(), byUsername.getFailedAttempts()));
+            msg = String.format("User \"%s\" attempts: %d", byUsername.getUsername(), byUsername.getFailedAttempts());
+            log.info(msg);
+            errors.append(msg);
 
             if (byUsername.getFailedAttempts() >= 3) {
                 byUsername.setIsActive(false);
-                log.error(String.format("User \"%s\" was inactivated!", authentication.getName()));
+                msg = String.format("User \"%s\" was inactivated!", authentication.getName());
+                log.error(msg);
+                errors.append(msg);
             }
 
             userService.update(byUsername, byUsername.getUserId());
 
+            tracer.currentSpan().tag("error.message", errors.toString());
         } catch (FeignException ex) {
-            log.error(String.format("User \"%s\" not found!", authentication.getName()));
+            msg = String.format("User \"%s\" not found!", authentication.getName());
+            tracer.currentSpan().tag("error.message", msg + ": " + ex.getMessage());
+            log.error(msg);
         }
     }
 }

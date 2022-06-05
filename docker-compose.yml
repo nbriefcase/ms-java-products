@@ -4,20 +4,113 @@ version: '3.1'
 
 services:
 
-  mysqlDb:
-    # https://hub.docker.com/_/mysql
-    image: mysql
-    command: --default-authentication-plugin=mysql_native_password
+  config-server:
+    container_name: config
+    image: config-server:v1
     restart: always
+    ports:
+      - 8888:8888
+    networks:
+      - internal
+
+  eureka-server:
+    container_name: eureka
+    image: server-service:v1
+    restart: always
+    ports:
+      - 8761:8761
+    networks:
+      - internal
+
+  product-service:
+    container_name: product
+    image: product-service:v1
+    restart: always
+    depends_on:
+      - mysql-server
+      - eureka-server
+      - config-server
+    networks:
+      - internal
+
+  item-service:
+    container_name: item
+    image: item-service:v1
+    restart: always
+    depends_on:
+      - product-service
+      - eureka-server
+      - config-server
+    ports:
+      - 8002:8002
+      - 8005:8005
+    networks:
+      - internal
+
+  user-service:
+    container_name: user
+    image: user-service:v1
+    restart: always
+    networks:
+      - internal
+    depends_on:
+      - config-server
+      - eureka-server
+      - postgres-server
+
+  oauth2-service:
+    container_name: oauth2
+    image: oauth2-service:v1
+    ports:
+      - 9100:9100
+    restart: always
+    networks:
+      - internal
+    depends_on:
+      - config-server
+      - eureka-server
+      - user-service
+
+  gateway-service:
+    container_name: gateway
+    image: gateway-service:v1
+    restart: always
+    depends_on:
+      - product-service
+      - item-service
+      - eureka-server
+      - config-server
+      - user-service
+      - oauth2-service
+    ports:
+      - 8090:8090
+    networks:
+      - internal
+
+  mysql-server:
+    # https://hub.docker.com/_/mysql
+    # https://stackoverflow.com/questions/54479941/how-to-init-mysql-database-in-docker-compose
+    image: mysql
+#    image: mysql:8
+    container_name: mysql
+#    command: --default-authentication-plugin=mysql_native_password
+    restart: always
+    volumes:
+      - ./data/mysql-data:/var/lib/mysql
+      #- ./scripts/mysql-init-files:/etc/mysql/conf.d
+      - ./scripts/mysql-init-files:/docker-entrypoint-initdb.d
     environment:
       - MYSQL_DATABASE=myDb
       - MYSQL_ROOT_PASSWORD=admin
     ports:
       - 3306:3306
+    networks:
+      - internal
 
-  postgresDb:
+  postgres-server:
     # https://hub.docker.com/_/postgres
     image: postgres
+    container_name: postgres
     restart: always
     environment:
       - POSTGRES_DB=myDb
@@ -25,9 +118,79 @@ services:
       - POSTGRES_PASSWORD=admin
     ports:
       - 5432:5432
+    networks:
+      - internal
 
-  adminer:
-    image: adminer
+  zipkin-server:
+    image: openzipkin/zipkin:2.12.9
+    container_name: zipkin
     restart: always
+    # Environment settings are defined here https://github.com/openzipkin/zipkin/blob/master/zipkin-server/README.md#environment-variables
+    # https://github.com/openzipkin/zipkin/tree/master/zipkin-collector/rabbitmq
+    # https://github.com/openzipkin-attic/docker-zipkin/blob/master/docker-compose-cassandra.yml
+    environment:
+      - RABBIT_USER=user
+      - RABBIT_PASSWORD=12345
+      - RABBIT_ADDRESSES=rabbitmq-server:5672
+      - STORAGE_TYPE=mysql # mem, mysql, cassandra3, elasticsearch
+      - MYSQL_USER=zipkin
+      - MYSQL_PASS=zipkin
+      - MYSQL_DB=zipkin
+      - MYSQL_HOST=mysql-server
+      - CASSANDRA_USERNAME=cassandra
+      - CASSANDRA_PASSWORD=cassandra
+      - CASSANDRA_CONTACT_POINTS='cassandra-server:9042'
     ports:
-      - 3100:8080
+      - 9411:9411
+    depends_on:
+      - mysql-server
+      #- cassandra-server
+      - rabbitmq-server
+    networks:
+      - internal
+
+  #  cassandra-server:
+  #    #https://hub.docker.com/r/bitnami/cassandra
+  #    container_name: cassandra
+  #    #image: cassandra
+  #    image: bitnami/cassandra
+  #    ports:
+  #      - 7000:7000
+  #      - 9042:9042
+  #    volumes:
+  #      #cassandra - docker hub
+  #      #- ./data/cassandra-data:/var/lib/cassandra
+  #      #bitnami
+  #      - ./data/cassandra-data:/bitnami
+  #      - ./scripts/cassandra-init-files:/docker-entrypoint-initdb.d
+  #    environment:
+  #      - CASSANDRA_SEEDS=cassandra
+  #      - CASSANDRA_PASSWORD_SEEDER=yes
+  #      - CASSANDRA_PASSWORD=cassandra
+  #      - CASSANDRA_USER=cassandra
+  #      - CASSANDRA_CLUSTER_NAME=My Cluster
+  #    networks:
+  #      - internal
+
+  rabbitmq-server:
+    # https://hub.docker.com/r/bitnami/rabbitmq
+    #image: 'bitnami/rabbitmq:latest'
+    #docker hub rabbitmq
+    #https://hub.docker.com/_/rabbitmq
+    #https://www.rabbitmq.com/configure.html#supported-environment-variables
+    image: rabbitmq:3.8-management-alpine
+    container_name: rabbitmq
+    environment:
+      - RABBITMQ_USERNAME=user
+      - RABBITMQ_PASSWORD=12345
+      - RABBITMQ_DEFAULT_USER=user
+      - RABBITMQ_DEFAULT_PASS=12345
+    ports:
+      - 15672:15672
+      - 5672:5672
+    networks:
+      - internal
+
+networks:
+  internal:
+    driver: bridge
