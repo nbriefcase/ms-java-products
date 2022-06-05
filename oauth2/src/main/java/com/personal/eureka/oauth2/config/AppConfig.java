@@ -12,13 +12,13 @@ public class AppConfig {
     @Autowired
     private Environment env;
 
-    @Bean
-    public CachingConnectionFactory defaultConnectionFactory() {
-        CachingConnectionFactory connectionFactory = new CachingConnectionFactory();
-        connectionFactory.setAddresses(env.getProperty("ms.rabbitmq.host", "localhost"));
-        connectionFactory.setPort(Integer.parseInt(env.getProperty("ms.rabbitmq.port", "5672")));
-        connectionFactory.setUsername(env.getProperty("ms.rabbitmq.user", "user"));
-        connectionFactory.setPassword(env.getProperty("ms.rabbitmq.password", "12345"));
-        return connectionFactory;
-    }
+//    @Bean
+//    public CachingConnectionFactory defaultConnectionFactory() {
+//        CachingConnectionFactory connectionFactory = new CachingConnectionFactory();
+//        connectionFactory.setAddresses(env.getProperty("ms.rabbitmq.host", "localhost"));
+//        connectionFactory.setPort(Integer.parseInt(env.getProperty("ms.rabbitmq.port", "5672")));
+//        connectionFactory.setUsername(env.getProperty("ms.rabbitmq.user", "user"));
+//        connectionFactory.setPassword(env.getProperty("ms.rabbitmq.password", "12345"));
+//        return connectionFactory;
+//    }
 }

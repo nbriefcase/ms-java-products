@@ -21,13 +21,13 @@ public class AppConfig {
         return DataSourceBuilder.create().type(com.zaxxer.hikari.HikariDataSource.class).build();
     }
 
-    @Bean
-    public CachingConnectionFactory defaultConnectionFactory() {
-        CachingConnectionFactory connectionFactory = new CachingConnectionFactory();
-        connectionFactory.setAddresses(env.getProperty("ms.rabbitmq.host", "localhost"));
-        connectionFactory.setPort(Integer.parseInt(env.getProperty("ms.rabbitmq.port", "5672")));
-        connectionFactory.setUsername(env.getProperty("ms.rabbitmq.user", "user"));
-        connectionFactory.setPassword(env.getProperty("ms.rabbitmq.password", "12345"));
-        return connectionFactory;
-    }
+//    @Bean
+//    public CachingConnectionFactory defaultConnectionFactory() {
+//        CachingConnectionFactory connectionFactory = new CachingConnectionFactory();
+//        connectionFactory.setAddresses(env.getProperty("ms.rabbitmq.host", "localhost"));
+//        connectionFactory.setPort(Integer.parseInt(env.getProperty("ms.rabbitmq.port", "5672")));
+//        connectionFactory.setUsername(env.getProperty("ms.rabbitmq.user", "user"));
+//        connectionFactory.setPassword(env.getProperty("ms.rabbitmq.password", "12345"));
+//        return connectionFactory;
+//    }
 }
